@@ -4,18 +4,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Management</title>
+    <title>TaskMaster</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
-            padding: 20px;
             background-color: #f4f4f4;
+        }
+
+        header,footer {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        footer {
+            text-align: center;
         }
 
         .container {
             max-width: 600px;
-            margin: auto;
+            margin: 30px auto;
             background: #fff;
             padding: 20px;
             border-radius: 8px;
@@ -72,9 +82,13 @@
 </head>
 
 <body>
-
+    <header>
+        <nav>
+            <h2>TaskMaster</h2>
+        </nav>
+    </header>
     <div class="container">
-        <h1>Product Management</h1>
+        <h1>Add Task</h1>
 
         <!-- Form to Create a New Product -->
         <form id="productForm">
@@ -112,6 +126,12 @@
             <!-- Products will be displayed here -->
         </div>
     </div>
+    <footer>
+        <div>
+            All rights reserved. 3MTT Capstone Project<br>
+            Usman Masud
+        </div>
+    </footer>
 
     <!-- JavaScript to Handle Form Submission and Display Products -->
     <script>
