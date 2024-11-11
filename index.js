@@ -6,23 +6,18 @@ const app = express();
 
 // middleware
 app.use(express.json());
-app.use(express.urlencoded({extended: false}));
-
+app.use(express.urlencoded({ extended: false }));
 
 // routes
 app.use("/api/products", productRoute);
-
-
-
 
 app.get("/", (req, res) => {
   res.send("Hello from Node API Server Updated");
 });
 
-
 mongoose
   .connect(
-    "mongodb+srv://haris2iftikhar:GClTzr15XhkjvN6k@backenddb.nrurtot.mongodb.net/Node-API?retryWrites=true&w=majority"
+    "mongodb+srv://usmanmasud260:Q7rZXaT222DkpSbr@cluster0.8a9er.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
   )
   .then(() => {
     console.log("Connected to database!");
