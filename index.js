@@ -4,6 +4,9 @@ const Product = require("./models/product.model.js");
 const productRoute = require("./routes/product.route.js");
 const app = express();
 
+const cors = require("cors");
+app.use(cors());
+
 // middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

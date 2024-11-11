@@ -115,50 +115,68 @@
 
     <!-- JavaScript to Handle Form Submission and Display Products -->
     <script>
-        // Sample data for testing
-        const products = [
-            { title: 'Sample Product 1', description: 'Description 1', deadline: '2024-12-01', priority: 'High' },
-            { title: 'Sample Product 2', description: 'Description 2', deadline: '2024-12-15', priority: 'Medium' },
-        ];
+        // Send a new product to the backend
+            async function addProduct(product) {
+                try {
+                    const response = await fetch("http://localhost:5000/api/products", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(product),
+                    });
+                    if (response.ok) {
+                        console.log("Product saved successfully!");
+                        displayProducts();
+                    } else {
+                        console.error("Failed to save product.");
+                    }
+                } catch (error) {
+                    console.error("Error:", error);
+                }
+            }
 
-        function displayProducts() {
-            const productList = document.getElementById('productList');
-            productList.innerHTML = '<h2>Product List</h2>';
+            // Display all products
+            async function displayProducts() {
+                const productList = document.getElementById('productList');
+                productList.innerHTML = '<h2>Product List</h2>';
+                try {
+                    const response = await fetch("http://localhost:3000/api/products");
+                    const products = await response.json();
 
-            products.forEach((product, index) => {
-                const productItem = document.createElement('div');
-                productItem.classList.add('product-item');
-                productItem.innerHTML = `
+                    products.forEach(product => {
+                        const productItem = document.createElement('div');
+                        productItem.classList.add('product-item');
+                        productItem.innerHTML = `
           <strong>${product.title}</strong><br>
           <em>Description:</em> ${product.description}<br>
           <em>Deadline:</em> ${new Date(product.deadline).toLocaleDateString()}<br>
           <em>Priority:</em> ${product.priority || 'N/A'}
         `;
-                productList.appendChild(productItem);
+                        productList.appendChild(productItem);
+                    });
+                } catch (error) {
+                    console.error("Error fetching products:", error);
+                }
+            }
+
+            // Handle form submission
+            document.getElementById('productForm').addEventListener('submit', function (event) {
+                event.preventDefault();
+
+                const title = document.getElementById('title').value;
+                const description = document.getElementById('description').value;
+                const deadline = document.getElementById('deadline').value;
+                const priority = document.getElementById('priority').value;
+
+                const newProduct = { title, description, deadline, priority };
+                addProduct(newProduct); // Call function to save product to database
+                this.reset();
             });
-        }
 
-        // Display initial products
-        displayProducts();
-
-        // Handle form submission
-        document.getElementById('productForm').addEventListener('submit', function (event) {
-            event.preventDefault();
-
-            const title = document.getElementById('title').value;
-            const description = document.getElementById('description').value;
-            const deadline = document.getElementById('deadline').value;
-            const priority = document.getElementById('priority').value;
-
-            // Add new product to products array
-            products.push({ title, description, deadline, priority });
-
-            // Reset the form
-            this.reset();
-
-            // Update product display
+            // Load products on page load
             displayProducts();
-        });
+        
     </script>
 </body>
 
