@@ -2,24 +2,24 @@ const mongoose = require("mongoose");
 
 const ProductSchema = mongoose.Schema(
   {
-    name: {
+    title: {
       type: String,
-      required: [true, "Please enter product name"],
+      required: [true, "Please enter task title"],
     },
 
-    quantity: {
-      type: Number,
+    description: {
+      type: String,
       required: true,
       default: 0,
     },
 
-    price: {
-      type: Number,
+    deadline: {
+      type: Date,
       required: true,
       default: 0,
     },
 
-    image: {
+    priority: {
       type: String,
       required: false,
     },
@@ -28,7 +28,6 @@ const ProductSchema = mongoose.Schema(
     timestamps: true,
   }
 );
-
 
 const Product = mongoose.model("Product", ProductSchema);
 
