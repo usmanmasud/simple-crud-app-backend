@@ -1,18 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TaskMaster</title>
     <style>
+        /* Your existing CSS styles */
+        
+
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             background-color: #f4f4f4;
         }
 
-        header,footer {
+        header,
+        footer {
             background: #fff;
             padding: 20px;
             border-radius: 8px;
@@ -64,6 +67,7 @@
             cursor: pointer;
             border-radius: 4px;
             width: 100%;
+            margin-bottom: 10px;
         }
 
         button:hover {
@@ -77,10 +81,29 @@
         .task-item {
             padding: 10px;
             border-bottom: 1px solid #ddd;
+            position: relative;
+        }
+
+        .task-actions {
+            margin-top: 10px;
+        }
+
+        .edit-button,
+        .delete-button {
+            background-color: #007bff;
+            color: #fff;
+            padding: 5px 10px;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-right: 5px;
+        }
+
+        .delete-button {
+            background-color: #dc3545;
         }
     </style>
 </head>
-
 <body>
     <header>
         <nav>
@@ -89,24 +112,19 @@
     </header>
     <div class="container">
         <h1>Add Task</h1>
-
-        <!-- Form to Create a New Product -->
         <form id="TaskForm">
             <div class="form-group">
                 <label for="title">Title:</label>
                 <input type="text" id="title" name="title" required />
             </div>
-
             <div class="form-group">
                 <label for="description">Description:</label>
                 <textarea id="description" name="description" required></textarea>
             </div>
-
             <div class="form-group">
                 <label for="deadline">Deadline:</label>
                 <input type="date" id="deadline" name="deadline" required />
             </div>
-
             <div class="form-group">
                 <label for="priority">Priority:</label>
                 <select id="priority" name="priority">
@@ -116,88 +134,101 @@
                     <option value="High">High</option>
                 </select>
             </div>
-
             <button type="submit">Add Task</button>
         </form>
-
-        <!-- List of Products -->
+        
         <div class="task-list" id="taskList">
-            <h2>Product List</h2>
-            <!-- Products will be displayed here -->
+            <h2>Task List</h2>
         </div>
     </div>
     <footer>
-        <div>
-            All rights reserved. 3MTT Capstone Project<br>
-            Usman Masud
-        </div>
+        <div>All rights reserved. 3MTT Capstone Project<br>Usman Masud</div>
     </footer>
 
-    <!-- JavaScript to Handle Form Submission and Display Products -->
     <script>
-        // Send a new product to the backend
-            async function addTask(task) {
-                try {
-                    const response = await fetch("http://localhost:3000/api/products", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify(task),
-                    });
-                    if (response.ok) {
-                        console.log("task saved successfully!");
-                        displaytasks();
-                    } else {
-                        console.error("Failed to save task.");
-                    }
-                } catch (error) {
-                    console.error("Error:", error);
+        // Add a new task to the server
+        async function addTask(task) {
+            try {
+                const response = await fetch("http://localhost:3000/api/products", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(task),
+                });
+                if (response.ok) {
+                    console.log("Task saved successfully!");
+                    displayTasks();
+                } else {
+                    console.error("Failed to save task.");
                 }
+            } catch (error) {
+                console.error("Error:", error);
             }
+        }
 
-            // Display all tasks
-            async function displaytasks() {
-                const taskList = document.getElementById('taskList');
-                taskList.innerHTML = '<h2>task List</h2>';
-                try {
-                    const response = await fetch("http://localhost:3000/api/products");
-                    const tasks = await response.json();
+        // Display all tasks with edit and delete options
+        async function displayTasks() {
+            const taskList = document.getElementById('taskList');
+            taskList.innerHTML = '<h2>Task List</h2>';
+            try {
+                const response = await fetch("http://localhost:3000/api/products");
+                const tasks = await response.json();
 
-                    tasks.forEach(task => {
-                        const taskItem = document.createElement('div');
-                        taskItem.classList.add('task-item');
-                        taskItem.innerHTML = `
-          <strong>${task.title}</strong><br>
-          <em>Description:</em> ${task.description}<br>
-          <em>Deadline:</em> ${new Date(task.deadline).toLocaleDateString()}<br>
-          <em>Priority:</em> ${task.priority || 'N/A'}
-        `;
-                        taskList.appendChild(taskItem);
-                    });
-                } catch (error) {
-                    console.error("Error fetching tasks:", error);
+                tasks.forEach(task => {
+                    const taskItem = document.createElement('div');
+                    taskItem.classList.add('task-item');
+                    taskItem.innerHTML = `
+                        <strong>${task.title}</strong><br>
+                        <em>Description:</em> ${task.description}<br>
+                        <em>Deadline:</em> ${new Date(task.deadline).toLocaleDateString()}<br>
+                        <em>Priority:</em> ${task.priority || 'N/A'}<br>
+                        <button onclick="deleteTask('${task._id}')">Delete</button>
+                        <button onclick="editTask('${task._id}')">Edit</button>
+                    `;
+                    taskList.appendChild(taskItem);
+                });
+            } catch (error) {
+                console.error("Error fetching tasks:", error);
+            }
+        }
+
+        // Delete a task by ID
+        async function deleteTask(taskId) {
+            try {
+                const response = await fetch(`http://localhost:3000/api/products/${taskId}`, {
+                    method: "DELETE",
+                });
+                if (response.ok) {
+                    console.log("Task deleted successfully!");
+                    displayTasks();
+                } else {
+                    console.error("Failed to delete task.");
                 }
+            } catch (error) {
+                console.error("Error deleting task:", error);
             }
+        }
 
-            // Handle form submission
-            document.getElementById('TaskForm').addEventListener('submit', function (event) {
-                event.preventDefault();
+        // Placeholder function for editing a task
+        async function editTask(taskId) {
+            // You can implement editing logic here
+            console.log(`Editing task with ID: ${taskId}`);
+        }
 
-                const title = document.getElementById('title').value;
-                const description = document.getElementById('description').value;
-                const deadline = document.getElementById('deadline').value;
-                const priority = document.getElementById('priority').value;
+        // Handle form submission
+        document.getElementById('TaskForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const title = document.getElementById('title').value;
+            const description = document.getElementById('description').value;
+            const deadline = document.getElementById('deadline').value;
+            const priority = document.getElementById('priority').value;
 
-                const newProduct = { title, description, deadline, priority };
-                addTask(newProduct); // Call function to save product to database
-                this.reset();
-            });
+            const newTask = { title, description, deadline, priority };
+            addTask(newTask);
+            this.reset();
+        });
 
-            // Load products on page load
-            displaytasks();
-        
+        // Load tasks on page load
+        displayTasks();
     </script>
 </body>
-
 </html>
